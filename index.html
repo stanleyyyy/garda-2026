@@ -1,7 +1,28 @@
-<html lang="sk"><head>
+  <script>
+  (function() {
+    var KEY = '3e6c96b613c2f66638c16275e9909b64';
+    var TRIP   = ['2026-06-28','2026-06-29','2026-06-30','2026-07-01','2026-07-02','2026-07-03','2026-07-04'];
+    var LABELS = ['NE 28/6','PO 29/6','UT 30/6','ST 1/7','ŠT 2/7','PI 3/7','SO 4/7'];
+    var HOT    = [0,1,2];
+    var FB = [
+      ['NE 28/6','⛅',33,'zamračené 3%'],['PO 29/6','🌤️',33,'polojasno 4%'],
+      ['UT 30/6','⛅',34,'zamračené 4%'],['ST 1/7','⛈️',29,'búrky 55%'],
+      ['ŠT 2/7','🌤️',28,'polojasno 4%'],['PI 3/7','☀️',29,'slnečno 1%'],['SO 4/7','☀️',30,'slnečno 6%'],
+    ];
+    function icon(id){return id<300?'⛈️':id<400?'🌦️':id<520?'🌧️':id<600?'🌦️':id<700?'🌨️':id<800?'🌫️':id===800?'☀️':id<=802?'🌤️':'⛅';}
+    function desc(id,pop){var d=id<300?'búrka':id<400?'mrholenie':id<600?'dážď':id<700?'sneh':id<800?'hmla':id===800?'jasno':id<=802?'polojasno':'oblačno';return d+(pop>=20?' '+Math.round(pop)+'%':'');}
+    function card(r,i){var bg=HOT.indexOf(i)>=0?'background:#fff3cd;':'';return '<div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;'+bg+'"><div class="date">'+r[0]+'</div><div class="icon">'+r[1]+'</div><div class="temp">'+r[2]+'°C</div><div class="desc">'+r[3]+'</div></div>';}
+    function render(rows,live){var g=document.getElementById('wx-days-live');if(!g)return;g.innerHTML=rows.map(card).join('');var now=new Date();var ts=now.getDate()+'.'+(now.getMonth()+1)+'. '+('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);document.getElementById('wx-status').innerHTML=live?'🟢 Živé · '+ts+' · <a href="https://openweathermap.org" target="_blank" style="color:#1a6fa8">OpenWeatherMap</a>':'🟡 Záložné 27.6.2026 · <a href="https://openweathermap.org" target="_blank" style="color:#1a6fa8">OpenWeatherMap</a>';}
+    render(FB,false);
+    fetch('https://api.openweathermap.org/data/2.5/forecast?lat=45.5067&lon=10.7335&appid='+KEY+'&units=metric&cnt=40')
+      .then(function(r){return r.json();})
+      .then(function(data){var byDate={};data.list.forEach(function(item){var d=item.dt_txt.split(' ')[0];if(!byDate[d])byDate[d]={temps:[],ids:[],pops:[]};byDate[d].temps.push(item.main.temp_max||item.main.temp);byDate[d].ids.push(item.weather[0].id);byDate[d].pops.push((item.pop||0)*100);});var rows=TRIP.map(function(date,i){var day=byDate[date];if(!day)return FB[i];var tmax=Math.round(Math.max.apply(null,day.temps));var id=day.ids[Math.floor(day.ids.length/2)]||day.ids[0];var pop=Math.max.apply(null,day.pops);return[LABELS[i],icon(id),tmax,desc(id,pop)];});render(rows,true);})
+      .catch(function(){});
+  })();
+  </script>="sk"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lago di Garda 2026 – Rodinný itinerár</title>
+<title>Lago di Garda 2026 â RodinnÃ½ itinerÃ¡r</title>
 <style>
   :root {
     --blue:#1a6fa8;--blue-light:#e8f3fb;--teal:#0d8a7a;--teal-light:#e4f5f3;
@@ -66,65 +87,65 @@
 </head>
 <body>
 <header>
-  <h1>🌊 Lago di Garda 2026</h1>
-  <p>Rodinný itinerár · 28. 6. – 5. 7. · TH Lazise</p>
+  <h1>ð Lago di Garda 2026</h1>
+  <p>RodinnÃ½ itinerÃ¡r Â· 28. 6. â 5. 7. Â· TH Lazise</p>
   <div class="header-badges">
-    <span class="badge">✈️ VIE → BGY</span><span class="badge">🏨 6 nocí</span>
-    <span class="badge">👨‍👩‍👧‍👦 2+2 roky</span><span class="badge">🚗 Auto z BGY</span>
+    <span class="badge">âï¸ VIE â BGY</span><span class="badge">ð¨ 6 nocÃ­</span>
+    <span class="badge">ð¨âð©âð§âð¦ 2+2 roky</span><span class="badge">ð Auto z BGY</span>
   </div>
 </header>
 <div class="tabs">
-  <div class="tab active" onclick="showTab('itinerary',this)">📅 Itinerár</div>
-  <div class="tab" onclick="showTab('weather',this)">☀️ Počasie</div>
-  <div class="tab" onclick="showTab('parking',this)">🅿️ Parkovanie</div>
-  <div class="tab" onclick="showTab('reserve',this)">📋 Rezervácie</div>
-  <div class="tab" onclick="showTab('tips',this)">💡 Tipy</div>
+  <div class="tab active" onclick="showTab('itinerary',this)">ð ItinerÃ¡r</div>
+  <div class="tab" onclick="showTab('weather',this)">âï¸ PoÄasie</div>
+  <div class="tab" onclick="showTab('parking',this)">ð¿ï¸ Parkovanie</div>
+  <div class="tab" onclick="showTab('reserve',this)">ð RezervÃ¡cie</div>
+  <div class="tab" onclick="showTab('tips',this)">ð¡ Tipy</div>
 </div>
 
 <div id="itinerary" class="section active">
 
 <div class="info-box warn">
-  <h4>🌡️ Prvé 3 dni sú najhorúcejšie (27–29°C)</h4>
-  Program upravený: horúce dni = aktivity s tieňom a chladením (voda, múzeá, vnútro). Gardaland presunutý na chladnejší deň. Lanovka Monte Baldo je v pohode – hore je chladnejšie!
+  <h4>ð¡ï¸ PrvÃ© 3 dni sÃº najhorÃºcejÅ¡ie (27â29Â°C)</h4>
+  Program upravenÃ½: horÃºce dni = aktivity s tieÅom a chladenÃ­m (voda, mÃºzeÃ¡, vnÃºtro). Gardaland presunutÃ½ na chladnejÅ¡Ã­ deÅ. Lanovka Monte Baldo je v pohode â hore je chladnejÅ¡ie!
 </div>
 
 <!-- DAY 1 -->
 <div class="day-card">
   <div class="day-header partly">
     <div class="day-num">1</div>
-    <div class="day-meta"><div class="day-title">Príchod – Lazise</div><div class="day-date">Nedeľa 28. 6.</div></div>
-    <span class="weather-pill part">⛅ 33°C</span>
+    <div class="day-meta"><div class="day-title">PrÃ­chod â Lazise</div><div class="day-date">NedeÄ¾a 28. 6.</div></div>
+    <span class="weather-pill part">â 33Â°C</span>
   </div>
   <div class="day-body"><ul class="timeline">
-    <li class="tl-item"><div class="tl-dot car">✈</div><div class="tl-content">
-      <div class="tl-time">07:20 → ~08:40</div><div class="tl-title">Let VIE → BGY, prevzatie auta</div>
+    <li class="tl-item"><div class="tl-dot car">â</div><div class="tl-content">
+      <div class="tl-time">07:20 â ~08:40</div><div class="tl-title">Let VIE â BGY, prevzatie auta</div>
       <div class="tl-desc">Hertz/Europcar/Avis priamo na letisku Orio al Serio. Trasa na Lazise: A4/A22, ~80 km, 1h 15 min.</div>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">📍 Letisko BGY</a>
-        <a class="lnk" href="https://www.rentalcars.com" target="_blank">🚗 Porovnaj autá</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">ð Letisko BGY</a>
+        <a class="lnk" href="https://www.rentalcars.com" target="_blank">ð Porovnaj autÃ¡</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🍕</div><div class="tl-content">
-      <div class="tl-time">~11:00</div><div class="tl-title">Obed po ceste – Peschiera del Garda</div>
-      <div class="tl-desc">Zastávka – kanály, pizzeria v tieni pod arkádami.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">📍 Peschiera centro</a></div>
+    <li class="tl-item"><div class="tl-dot sun">ð</div><div class="tl-content">
+      <div class="tl-time">~11:00</div><div class="tl-title">Obed po ceste â Peschiera del Garda</div>
+      <div class="tl-desc">ZastÃ¡vka â kanÃ¡ly, pizzeria v tieni pod arkÃ¡dami.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">ð Peschiera centro</a></div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🏰</div><div class="tl-content">
-      <div class="tl-time">13:00 – podvečer</div><div class="tl-title">Lazise – prvé spoznávanie (pomalé tempo)</div>
-      <div class="tl-desc">Stredoveká brána, hrad Scaligero, promenáda, zmrzlina. Ihrisko za hradom (Via Rocca 21). Vedro – nestresuj, oddychový deň.</div>
+    <li class="tl-item"><div class="tl-dot castle">ð°</div><div class="tl-content">
+      <div class="tl-time">13:00 â podveÄer</div><div class="tl-title">Lazise â prvÃ© spoznÃ¡vanie (pomalÃ© tempo)</div>
+      <div class="tl-desc">StredovekÃ¡ brÃ¡na, hrad Scaligero, promenÃ¡da, zmrzlina. Ihrisko za hradom (Via Rocca 21). Vedro â nestresuj, oddychovÃ½ deÅ.</div>
       <span class="tag free">vstup zadarmo</span><span class="tag kids">ihrisko za hradom</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Lazise" target="_blank">📍 Castello Scaligero</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Via+Rocca+21+Lazise" target="_blank">📍 Ihrisko Via Rocca</a>
-        <a class="lnk" href="https://www.visitlazise.com" target="_blank">🌐 visitlazise.com</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Lazise" target="_blank">ð Castello Scaligero</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Via+Rocca+21+Lazise" target="_blank">ð Ihrisko Via Rocca</a>
+        <a class="lnk" href="https://www.visitlazise.com" target="_blank">ð visitlazise.com</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot green">🏨</div><div class="tl-content">
-      <div class="tl-time">15:00</div><div class="tl-title">Check-in + bazén</div>
-      <div class="tl-desc">Príchod od 15:00. Bazén hotela – ideálne na schladenie po príchode.</div>
+    <li class="tl-item"><div class="tl-dot green">ð¨</div><div class="tl-content">
+      <div class="tl-time">15:00</div><div class="tl-title">Check-in + bazÃ©n</div>
+      <div class="tl-desc">PrÃ­chod od 15:00. BazÃ©n hotela â ideÃ¡lne na schladenie po prÃ­chode.</div>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=TH+Lazise+Hotel+Parchi+Del+Garda" target="_blank">📍 Hotel</a>
-        <a class="lnk" href="https://www.th-resorts.com/en/hotels/th-lazise-hotel-parchi-del-garda" target="_blank">🌐 Web hotela</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=TH+Lazise+Hotel+Parchi+Del+Garda" target="_blank">ð Hotel</a>
+        <a class="lnk" href="https://www.th-resorts.com/en/hotels/th-lazise-hotel-parchi-del-garda" target="_blank">ð Web hotela</a>
       </div>
     </div></li>
   </ul></div>
@@ -135,43 +156,43 @@
   <div class="day-header sunny">
     <div class="day-num" style="background:var(--sun)">2</div>
     <div class="day-meta">
-      <div class="day-title">Malcesine + Monte Baldo 🚠 <span class="heat-badge">🌡️ horúco → hora = chladnejšie!</span></div>
+      <div class="day-title">Malcesine + Monte Baldo ð  <span class="heat-badge">ð¡ï¸ horÃºco â hora = chladnejÅ¡ie!</span></div>
       <div class="day-date">Pondelok 29. 6.</div>
     </div>
-    <span class="weather-pill sun">🌤️ 33°C</span>
+    <span class="weather-pill sun">ð¤ï¸ 33Â°C</span>
   </div>
   <div class="day-body">
-    <div class="info-box green"><h4>✅ Prečo dnes lanovka?</h4>Dole pri jazere 36°C a búrka! Ale na vrchole Monte Baldo (1760 m) len ~20°C a nad mrakmi. Ideálny únik – a výhľad na celé jazero!</div>
-    <div class="info-box warn"><h4>🕗 Ísť SKORO ráno!</h4>Parkovanie plné do 10:00. Lanovka – fronty od 11:00. Príď pred 9:00 = max 20 min čakanie.</div>
+    <div class="info-box green"><h4>â PreÄo dnes lanovka?</h4>Dole pri jazere 36Â°C a bÃºrka! Ale na vrchole Monte Baldo (1760 m) len ~20Â°C a nad mrakmi. IdeÃ¡lny Ãºnik â a vÃ½hÄ¾ad na celÃ© jazero!</div>
+    <div class="info-box warn"><h4>ð ÃsÅ¥ SKORO rÃ¡no!</h4>Parkovanie plnÃ© do 10:00. Lanovka â fronty od 11:00. PrÃ­Ä pred 9:00 = max 20 min Äakanie.</div>
     <ul class="timeline">
-    <li class="tl-item"><div class="tl-dot car">🚗</div><div class="tl-content">
+    <li class="tl-item"><div class="tl-dot car">ð</div><div class="tl-content">
       <div class="tl-time">07:45 odchod</div><div class="tl-title">Jazda do Malcesine (~45 min po SS249)</div>
-      <div class="tl-desc">Parkovisko <strong>Parcheggio Paina</strong> – ~€2/h, 5 min pešo na lanovku.</div>
+      <div class="tl-desc">Parkovisko <strong>Parcheggio Paina</strong> â ~â¬2/h, 5 min peÅ¡o na lanovku.</div>
       <span class="tag park">Parcheggio Paina</span>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Paina+Malcesine" target="_blank">📍 Parcheggio Paina</a></div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Paina+Malcesine" target="_blank">ð Parcheggio Paina</a></div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🚠</div><div class="tl-content">
-      <div class="tl-time">09:00–13:00</div><div class="tl-title">Lanovka Malcesine → Monte Baldo (1760 m)</div>
-      <div class="tl-desc">Kabína sa otáča 360° – deti budú nadšené! Hore: lúky, alpaky, svište, ľahké chodníčky. <strong>Vezmite bundy</strong> – hore je o ~15°C chladnejšie!</div>
-      <span class="tag reserve">🔴 kúp online – €27/dospelý</span><span class="tag kids">kočík povolený za príplatok</span>
+    <li class="tl-item"><div class="tl-dot castle">ð </div><div class="tl-content">
+      <div class="tl-time">09:00â13:00</div><div class="tl-title">Lanovka Malcesine â Monte Baldo (1760 m)</div>
+      <div class="tl-desc">KabÃ­na sa otÃ¡Äa 360Â° â deti budÃº nadÅ¡enÃ©! Hore: lÃºky, alpaky, sviÅ¡te, Ä¾ahkÃ© chodnÃ­Äky. <strong>Vezmite bundy</strong> â hore je o ~15Â°C chladnejÅ¡ie!</div>
+      <span class="tag reserve">ð´ kÃºp online â â¬27/dospelÃ½</span><span class="tag kids">koÄÃ­k povolenÃ½ za prÃ­platok</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Funivia+Malcesine+Monte+Baldo" target="_blank">📍 Stanica lanovky</a>
-        <a class="lnk book" href="https://www.funiviedelbaldo.it/en/timetables-and-fares-malcesine-monte-baldo-cable-cars" target="_blank">🎟 Lístky + časy</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Funivia+Malcesine+Monte+Baldo" target="_blank">ð Stanica lanovky</a>
+        <a class="lnk book" href="https://www.funiviedelbaldo.it/en/timetables-and-fares-malcesine-monte-baldo-cable-cars" target="_blank">ð LÃ­stky + Äasy</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🏰</div><div class="tl-content">
-      <div class="tl-time">13:30–15:00</div><div class="tl-title">Hrad Scaligero Malcesine + Múzeum</div>
-      <div class="tl-desc">Na brehu jazera. Interaktívne Múzeum prírodnej histórie Monte Baldo. Veža s panorámou. Kočík nechaj dole – schody.</div>
-      <span class="tag kids">interaktívne múzeum</span>
+    <li class="tl-item"><div class="tl-dot castle">ð°</div><div class="tl-content">
+      <div class="tl-time">13:30â15:00</div><div class="tl-title">Hrad Scaligero Malcesine + MÃºzeum</div>
+      <div class="tl-desc">Na brehu jazera. InteraktÃ­vne MÃºzeum prÃ­rodnej histÃ³rie Monte Baldo. VeÅ¾a s panorÃ¡mou. KoÄÃ­k nechaj dole â schody.</div>
+      <span class="tag kids">interaktÃ­vne mÃºzeum</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Malcesine" target="_blank">📍 Castello Malcesine</a>
-        <a class="lnk" href="https://www.visitmalcesine.com/en/scaligero-castle" target="_blank">🌐 Info hrad</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Malcesine" target="_blank">ð Castello Malcesine</a>
+        <a class="lnk" href="https://www.visitmalcesine.com/en/scaligero-castle" target="_blank">ð Info hrad</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🍦</div><div class="tl-content">
-      <div class="tl-time">15:00</div><div class="tl-title">Prístav, zmrzlina, návrat</div>
-      <div class="tl-desc">Gelato pri jazere, potom späť do hotela na bazén.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=porto+Malcesine+lago+di+Garda" target="_blank">📍 Prístav Malcesine</a></div>
+    <li class="tl-item"><div class="tl-dot sun">ð¦</div><div class="tl-content">
+      <div class="tl-time">15:00</div><div class="tl-title">PrÃ­stav, zmrzlina, nÃ¡vrat</div>
+      <div class="tl-desc">Gelato pri jazere, potom spÃ¤Å¥ do hotela na bazÃ©n.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=porto+Malcesine+lago+di+Garda" target="_blank">ð PrÃ­stav Malcesine</a></div>
     </div></li>
   </ul></div>
 </div>
@@ -181,45 +202,45 @@
   <div class="day-header sunny">
     <div class="day-num" style="background:var(--sun)">3</div>
     <div class="day-meta">
-      <div class="day-title">Peschiera + Torri del Benaco <span class="heat-badge">🌡️ 35°C – ranné hodiny!</span></div>
+      <div class="day-title">Peschiera + Torri del Benaco <span class="heat-badge">ð¡ï¸ 35Â°C â rannÃ© hodiny!</span></div>
       <div class="day-date">Utorok 30. 6.</div>
     </div>
-    <span class="weather-pill part">⛅ 34°C</span>
+    <span class="weather-pill part">â 34Â°C</span>
   </div>
   <div class="day-body">
-    <div class="info-box warn"><h4>🌡️ Najteplejší deň – stratégia</h4>Ísť ráno skoro (8:30). 35°C – poobede bazén je nutnosť! Oba ciele majú kanály, prístavy a tieň pod stromami.</div>
+    <div class="info-box warn"><h4>ð¡ï¸ NajteplejÅ¡Ã­ deÅ â stratÃ©gia</h4>ÃsÅ¥ rÃ¡no skoro (8:30). 35Â°C â poobede bazÃ©n je nutnosÅ¥! Oba ciele majÃº kanÃ¡ly, prÃ­stavy a tieÅ pod stromami.</div>
     <ul class="timeline">
-    <li class="tl-item"><div class="tl-dot car">🚗</div><div class="tl-content">
+    <li class="tl-item"><div class="tl-dot car">ð</div><div class="tl-content">
       <div class="tl-time">08:30</div><div class="tl-title">Peschiera del Garda (~10 min)</div>
-      <div class="tl-desc">UNESCO pevnosť – kanály, kačky, trenino (turistický vláčik), ihrisko. Parkovisko Porta Brescia pri vstupe.</div>
-      <span class="tag park">Porta Brescia parking</span><span class="tag kids">kačky + vláčik</span>
+      <div class="tl-desc">UNESCO pevnosÅ¥ â kanÃ¡ly, kaÄky, trenino (turistickÃ½ vlÃ¡Äik), ihrisko. Parkovisko Porta Brescia pri vstupe.</div>
+      <span class="tag park">Porta Brescia parking</span><span class="tag kids">kaÄky + vlÃ¡Äik</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">📍 Peschiera centro</a>
-        <a class="lnk" href="https://www.navigazionelaghi.it/en/lake-garda.aspx" target="_blank">🚢 Trajekty</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Brescia+Peschiera+del+Garda" target="_blank">📍 Parking Porta Brescia</a>
-        <a class="lnk" href="https://www.visitpeschiera.com" target="_blank">🌐 visitpeschiera.com</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">ð Peschiera centro</a>
+        <a class="lnk" href="https://www.navigazionelaghi.it/en/lake-garda.aspx" target="_blank">ð¢ Trajekty</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Brescia+Peschiera+del+Garda" target="_blank">ð Parking Porta Brescia</a>
+        <a class="lnk" href="https://www.visitpeschiera.com" target="_blank">ð visitpeschiera.com</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🏰</div><div class="tl-content">
-      <div class="tl-time">12:00 (~30 min na sever)</div><div class="tl-title">Torri del Benaco – hrad + Limonaia</div>
-      <div class="tl-desc">Hrad so skleníkom citrónovníkov z roku 1760 – unikát. Múzeum, veže, hradby s výhľadom. Parkovanie pri prístave.</div>
-      <span class="tag kids">limonaia 1760 – unikát!</span>
+    <li class="tl-item"><div class="tl-dot castle">ð°</div><div class="tl-content">
+      <div class="tl-time">12:00 (~30 min na sever)</div><div class="tl-title">Torri del Benaco â hrad + Limonaia</div>
+      <div class="tl-desc">Hrad so sklenÃ­kom citrÃ³novnÃ­kov z roku 1760 â unikÃ¡t. MÃºzeum, veÅ¾e, hradby s vÃ½hÄ¾adom. Parkovanie pri prÃ­stave.</div>
+      <span class="tag kids">limonaia 1760 â unikÃ¡t!</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Torri+del+Benaco" target="_blank">📍 Castello Torri</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+porto+Torri+del+Benaco" target="_blank">📍 Parking prístav</a>
-        <a class="lnk" href="https://www.museocastellodibenaco.it" target="_blank">🌐 Web múzea</a>
-        <a class="lnk" href="https://www.visitgarda.com/en/torri-del-benaco/" target="_blank">🌐 Info Torri</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Castello+Scaligero+Torri+del+Benaco" target="_blank">ð Castello Torri</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+porto+Torri+del+Benaco" target="_blank">ð Parking prÃ­stav</a>
+        <a class="lnk" href="https://www.museocastellodibenaco.it" target="_blank">ð Web mÃºzea</a>
+        <a class="lnk" href="https://www.visitgarda.com/en/torri-del-benaco/" target="_blank">ð Info Torri</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🏊</div><div class="tl-content">
-      <div class="tl-time">14:30</div><div class="tl-title">Návrat – bazén alebo jazero pri hoteli</div>
-      <div class="tl-desc">Najhorúcejšia časť dňa – bazén hotela alebo piesočnatá pláž v Lazise.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">📍 Pláž Lazise</a></div>
+    <li class="tl-item"><div class="tl-dot sun">ð</div><div class="tl-content">
+      <div class="tl-time">14:30</div><div class="tl-title">NÃ¡vrat â bazÃ©n alebo jazero pri hoteli</div>
+      <div class="tl-desc">NajhorÃºcejÅ¡ia ÄasÅ¥ dÅa â bazÃ©n hotela alebo piesoÄnatÃ¡ plÃ¡Å¾ v Lazise.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">ð PlÃ¡Å¾ Lazise</a></div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot kids">🛝</div><div class="tl-content">
-      <div class="tl-time">podvečer</div><div class="tl-title">Ihrisko Torri del Benaco (ak ostanete)</div>
-      <div class="tl-desc">Ihrisko s kaviarňou pre rodičov priamo v obci.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parco+giochi+Torri+del+Benaco" target="_blank">📍 Ihrisko Torri</a></div>
+    <li class="tl-item"><div class="tl-dot kids">ð</div><div class="tl-content">
+      <div class="tl-time">podveÄer</div><div class="tl-title">Ihrisko Torri del Benaco (ak ostanete)</div>
+      <div class="tl-desc">Ihrisko s kaviarÅou pre rodiÄov priamo v obci.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parco+giochi+Torri+del+Benaco" target="_blank">ð Ihrisko Torri</a></div>
     </div></li>
   </ul></div>
 </div>
@@ -228,35 +249,35 @@
 <div class="day-card">
   <div class="day-header partly">
     <div class="day-num">4</div>
-    <div class="day-meta"><div class="day-title">Gardaland 🎠</div><div class="day-date">Streda 1. 7.</div></div>
-    <span class="weather-pill rain">⛈️ 29°C</span>
+    <div class="day-meta"><div class="day-title">Gardaland ð </div><div class="day-date">Streda 1. 7.</div></div>
+    <span class="weather-pill rain">âï¸ 29Â°C</span>
   </div>
   <div class="day-body">
-    <div class="info-box green"><h4>✅ Prečo dnes Gardaland?</h4>30°C a dážď ráno – poobede sa vyjasní. Gardaland ideálne od 10h keď prestane pršať!</div>
-    <div class="info-box warn"><h4>⚠️ Rezervuj vopred!</h4>Online lístky sú lacnejšie, preskočíš pokladňu. Prídi o 9:00 – fronty rastú od 11:00.</div>
+    <div class="info-box green"><h4>â PreÄo dnes Gardaland?</h4>30Â°C a dÃ¡Å¾Ä rÃ¡no â poobede sa vyjasnÃ­. Gardaland ideÃ¡lne od 10h keÄ prestane prÅ¡aÅ¥!</div>
+    <div class="info-box warn"><h4>â ï¸ Rezervuj vopred!</h4>Online lÃ­stky sÃº lacnejÅ¡ie, preskoÄÃ­Å¡ pokladÅu. PrÃ­di o 9:00 â fronty rastÃº od 11:00.</div>
     <ul class="timeline">
-    <li class="tl-item"><div class="tl-dot sun">🎠</div><div class="tl-content">
+    <li class="tl-item"><div class="tl-dot sun">ð </div><div class="tl-content">
       <div class="tl-time">09:00</div><div class="tl-title">Gardaland otvorenie</div>
-      <div class="tl-desc">5 min autom od hotela. Pre 2-ročného: <strong>Peppa Pig Land</strong>. Pre 7-ročného: Oblivion, Blue Tornado, Magic Mountain.</div>
-      <span class="tag reserve">🔴 kúp online</span><span class="tag kids">Peppa Pig Land</span>
+      <div class="tl-desc">5 min autom od hotela. Pre 2-roÄnÃ©ho: <strong>Peppa Pig Land</strong>. Pre 7-roÄnÃ©ho: Oblivion, Blue Tornado, Magic Mountain.</div>
+      <span class="tag reserve">ð´ kÃºp online</span><span class="tag kids">Peppa Pig Land</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Gardaland+Castelnuovo+del+Garda" target="_blank">📍 Gardaland</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Gardaland+parking+Castelnuovo+del+Garda" target="_blank">📍 Parkovisko</a>
-        <a class="lnk book" href="https://www.gardaland.it/en/tickets/" target="_blank">🎟 Kúp lístky</a>
-        <a class="lnk" href="https://www.gardaland.it" target="_blank">🌐 gardaland.it</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Gardaland+Castelnuovo+del+Garda" target="_blank">ð Gardaland</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Gardaland+parking+Castelnuovo+del+Garda" target="_blank">ð Parkovisko</a>
+        <a class="lnk book" href="https://www.gardaland.it/en/tickets/" target="_blank">ð KÃºp lÃ­stky</a>
+        <a class="lnk" href="https://www.gardaland.it" target="_blank">ð gardaland.it</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot">💦</div><div class="tl-content">
-      <div class="tl-time">možnosť</div><div class="tl-title">Legoland Water Park (príplatok)</div>
-      <div class="tl-desc">Kombinovaný lístok – vodné atrakcie pre obe deti. Dospelí len s dieťaťom do 14 rokov.</div>
+    <li class="tl-item"><div class="tl-dot">ð¦</div><div class="tl-content">
+      <div class="tl-time">moÅ¾nosÅ¥</div><div class="tl-title">Legoland Water Park (prÃ­platok)</div>
+      <div class="tl-desc">KombinovanÃ½ lÃ­stok â vodnÃ© atrakcie pre obe deti. DospelÃ­ len s dieÅ¥aÅ¥om do 14 rokov.</div>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Legoland+Water+Park+Gardaland+Castelnuovo+del+Garda" target="_blank">📍 Legoland Water Park</a>
-        <a class="lnk book" href="https://www.gardaland.it/en/tickets/legoland-waterpark/" target="_blank">🎟 Combo lístok</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Legoland+Water+Park+Gardaland+Castelnuovo+del+Garda" target="_blank">ð Legoland Water Park</a>
+        <a class="lnk book" href="https://www.gardaland.it/en/tickets/legoland-waterpark/" target="_blank">ð Combo lÃ­stok</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot green">🌊</div><div class="tl-content">
-      <div class="tl-time">popoludní</div><div class="tl-title">Bazén v hoteli + oddych</div>
-      <div class="tl-desc">Plávanie a relaxácia pred večerou.</div>
+    <li class="tl-item"><div class="tl-dot green">ð</div><div class="tl-content">
+      <div class="tl-time">popoludnÃ­</div><div class="tl-title">BazÃ©n v hoteli + oddych</div>
+      <div class="tl-desc">PlÃ¡vanie a relaxÃ¡cia pred veÄerou.</div>
     </div></li>
   </ul></div>
 </div>
@@ -265,38 +286,38 @@
 <div class="day-card">
   <div class="day-header rainy">
     <div class="day-num" style="background:var(--rain)">5</div>
-    <div class="day-meta"><div class="day-title">Museo Nicolis + Sirmione</div><div class="day-date">Štvrtok 2. 7.</div></div>
-    <span class="weather-pill sun">🌤️ 28°C</span>
+    <div class="day-meta"><div class="day-title">Museo Nicolis + Sirmione</div><div class="day-date">Å tvrtok 2. 7.</div></div>
+    <span class="weather-pill sun">ð¤ï¸ 28Â°C</span>
   </div>
   <div class="day-body">
-    <div class="info-box blue">Štvrtok – sucho, 31°C. Nicolis dopoludnia, Sirmione poobede. Skvelý deň!</div>
+    <div class="info-box blue">Å tvrtok â sucho, 31Â°C. Nicolis dopoludnia, Sirmione poobede. SkvelÃ½ deÅ!</div>
     <ul class="timeline">
-    <li class="tl-item"><div class="tl-dot park">🚗</div><div class="tl-content">
-      <div class="tl-time">09:30</div><div class="tl-title">Museo Nicolis – Villafranca di Verona (~25 min)</div>
-      <div class="tl-desc">200+ historických áut, F1 monoposty, lietadlá, hudobné nástroje – 6000 m². Pre 7-ročného zlatý dôl. Vstup: deti do 5 r. zadarmo, 6–10 r. €4, dospelí €10. Ot. 10:00–18:00.</div>
-      <span class="tag reserve">zvažuj online lístok</span><span class="tag kids">F1, autá, lietadlá</span>
+    <li class="tl-item"><div class="tl-dot park">ð</div><div class="tl-content">
+      <div class="tl-time">09:30</div><div class="tl-title">Museo Nicolis â Villafranca di Verona (~25 min)</div>
+      <div class="tl-desc">200+ historickÃ½ch Ã¡ut, F1 monoposty, lietadlÃ¡, hudobnÃ© nÃ¡stroje â 6000 mÂ². Pre 7-roÄnÃ©ho zlatÃ½ dÃ´l. Vstup: deti do 5 r. zadarmo, 6â10 r. â¬4, dospelÃ­ â¬10. Ot. 10:00â18:00.</div>
+      <span class="tag reserve">zvaÅ¾uj online lÃ­stok</span><span class="tag kids">F1, autÃ¡, lietadlÃ¡</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Museo+Nicolis+Villafranca+di+Verona" target="_blank">📍 Museo Nicolis</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Museo+Nicolis+Villafranca+di+Verona" target="_blank">📍 Parkovisko</a>
-        <a class="lnk book" href="https://www.museonicolis.com/en/info-and-tickets/" target="_blank">🎟 Lístky + info</a>
-        <a class="lnk" href="https://www.museonicolis.com" target="_blank">🌐 museonicolis.com</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Museo+Nicolis+Villafranca+di+Verona" target="_blank">ð Museo Nicolis</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Museo+Nicolis+Villafranca+di+Verona" target="_blank">ð Parkovisko</a>
+        <a class="lnk book" href="https://www.museonicolis.com/en/info-and-tickets/" target="_blank">ð LÃ­stky + info</a>
+        <a class="lnk" href="https://www.museonicolis.com" target="_blank">ð museonicolis.com</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🏰</div><div class="tl-content">
-      <div class="tl-time">14:00 (~20 min od múzea)</div><div class="tl-title">Sirmione – hrad Rocca Scaligera</div>
-      <div class="tl-desc">Hrad priamo vo vode jazera. Malé deti milujú kačky a labute v priekope. Veže s panorámou, padací most!</div>
-      <span class="tag kids">kačky v priekope</span>
+    <li class="tl-item"><div class="tl-dot castle">ð°</div><div class="tl-content">
+      <div class="tl-time">14:00 (~20 min od mÃºzea)</div><div class="tl-title">Sirmione â hrad Rocca Scaligera</div>
+      <div class="tl-desc">Hrad priamo vo vode jazera. MalÃ© deti milujÃº kaÄky a labute v priekope. VeÅ¾e s panorÃ¡mou, padacÃ­ most!</div>
+      <span class="tag kids">kaÄky v priekope</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Rocca+Scaligera+Sirmione" target="_blank">📍 Rocca Scaligera</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Lugana+Sirmione" target="_blank">📍 Parcheggio Lugana</a>
-        <a class="lnk" href="https://www.lakegardasirmione.com/en/scaligero-castle/" target="_blank">🌐 Info hrad</a>
-        <a class="lnk book" href="https://www.ticketone.it" target="_blank">🎟 Lístky online</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Rocca+Scaligera+Sirmione" target="_blank">ð Rocca Scaligera</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Lugana+Sirmione" target="_blank">ð Parcheggio Lugana</a>
+        <a class="lnk" href="https://www.lakegardasirmione.com/en/scaligero-castle/" target="_blank">ð Info hrad</a>
+        <a class="lnk book" href="https://www.ticketone.it" target="_blank">ð LÃ­stky online</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🏖</div><div class="tl-content">
-      <div class="tl-time">16:30</div><div class="tl-title">Pláž Lido delle Bionde – Sirmione</div>
-      <div class="tl-desc">Plytká voda, bezpečná pre malé deti, termálne pramene v okolí.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Lido+delle+Bionde+Sirmione" target="_blank">📍 Lido delle Bionde</a></div>
+    <li class="tl-item"><div class="tl-dot sun">ð</div><div class="tl-content">
+      <div class="tl-time">16:30</div><div class="tl-title">PlÃ¡Å¾ Lido delle Bionde â Sirmione</div>
+      <div class="tl-desc">PlytkÃ¡ voda, bezpeÄnÃ¡ pre malÃ© deti, termÃ¡lne pramene v okolÃ­.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Lido+delle+Bionde+Sirmione" target="_blank">ð Lido delle Bionde</a></div>
     </div></li>
   </ul></div>
 </div>
@@ -305,65 +326,65 @@
 <div class="day-card">
   <div class="day-header sunny">
     <div class="day-num" style="background:var(--sun)">6</div>
-    <div class="day-meta"><div class="day-title">Verona <span class="heat-badge">🌡️ ísť ráno, odísť pred 13h</span></div><div class="day-date">Piatok 3. 7.</div></div>
-    <span class="weather-pill sun">☀️ 29°C</span>
+    <div class="day-meta"><div class="day-title">Verona <span class="heat-badge">ð¡ï¸ Ã­sÅ¥ rÃ¡no, odÃ­sÅ¥ pred 13h</span></div><div class="day-date">Piatok 3. 7.</div></div>
+    <span class="weather-pill sun">âï¸ 29Â°C</span>
   </div>
   <div class="day-body">
     <div class="info-box warn">
-      <h4>🌧️ Dážď 30% – choďte ráno, prípadne múzeá ako záloha</h4>
-      Dážď 30% = možno prší, možno nie. Štart ráno 8:30, ak prší → Castelvecchio múzeum, Casa Giulietta, kaviarne. Ak sucho → Arena vonku.
+      <h4>ð§ï¸ DÃ¡Å¾Ä 30% â choÄte rÃ¡no, prÃ­padne mÃºzeÃ¡ ako zÃ¡loha</h4>
+      DÃ¡Å¾Ä 30% = moÅ¾no prÅ¡Ã­, moÅ¾no nie. Å tart rÃ¡no 8:30, ak prÅ¡Ã­ â Castelvecchio mÃºzeum, Casa Giulietta, kaviarne. Ak sucho â Arena vonku.
     </div>
     <div class="info-box warn">
-      <h4>🅿️ Parkovanie Verona</h4>
-      <strong>Parcheggio Centro</strong> (Via Campo Marzo) – 10 min pešo od Arény, €1/hod max €10/deň. Priestranné miesta, 24/7.<br>
-      <strong>Zadarmo:</strong> Piazzale Olimpia (pri štadióne) – autobus č.91 → centrum 12 min, €1.50/trip.
+      <h4>ð¿ï¸ Parkovanie Verona</h4>
+      <strong>Parcheggio Centro</strong> (Via Campo Marzo) â 10 min peÅ¡o od ArÃ©ny, â¬1/hod max â¬10/deÅ. PriestrannÃ© miesta, 24/7.<br>
+      <strong>Zadarmo:</strong> Piazzale Olimpia (pri Å¡tadiÃ³ne) â autobus Ä.91 â centrum 12 min, â¬1.50/trip.
     </div>
-    <div class="info-box red"><h4>⛔ ZTL zóna!</h4>Kamery pri každom vstupe. Pokuta €85+. Parkuj MIMO centra!</div>
+    <div class="info-box red"><h4>â ZTL zÃ³na!</h4>Kamery pri kaÅ¾dom vstupe. Pokuta â¬85+. Parkuj MIMO centra!</div>
     <ul class="timeline">
-    <li class="tl-item"><div class="tl-dot car">🚗</div><div class="tl-content">
+    <li class="tl-item"><div class="tl-dot car">ð</div><div class="tl-content">
       <div class="tl-time">08:30 odchod</div><div class="tl-title">Jazda do Verony (~30 min)</div>
-      <div class="tl-desc">Príchod pred 10:00, parkovisko Parcheggio Centro (Via Campo Marzo).</div>
+      <div class="tl-desc">PrÃ­chod pred 10:00, parkovisko Parcheggio Centro (Via Campo Marzo).</div>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">📍 Parcheggio Centro</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Piazzale+Olimpia+parcheggio+Verona" target="_blank">📍 Olimpia (free)</a>
-        <a class="lnk book" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">🌐 amt3.it</a>
+        <a class="lnk maps" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">ð Parcheggio Centro</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Piazzale+Olimpia+parcheggio+Verona" target="_blank">ð Olimpia (free)</a>
+        <a class="lnk book" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">ð amt3.it</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🏟</div><div class="tl-content">
-      <div class="tl-time">09:30–10:30</div><div class="tl-title">Aréna di Verona</div>
-      <div class="tl-desc">Rímsky amfiteáter z 1. stor. n. l. Vstup ~€10 dospelí. Verona Card = výhodnejšie pri viacerých atrakciách. Zadarmo z Piazza Brà zvonku.</div>
-      <span class="tag reserve">Verona Card zvažuj</span>
+    <li class="tl-item"><div class="tl-dot sun">ð</div><div class="tl-content">
+      <div class="tl-time">09:30â10:30</div><div class="tl-title">ArÃ©na di Verona</div>
+      <div class="tl-desc">RÃ­msky amfiteÃ¡ter z 1. stor. n. l. Vstup ~â¬10 dospelÃ­. Verona Card = vÃ½hodnejÅ¡ie pri viacerÃ½ch atrakciÃ¡ch. Zadarmo z Piazza BrÃ  zvonku.</div>
+      <span class="tag reserve">Verona Card zvaÅ¾uj</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Arena+di+Verona" target="_blank">📍 Aréna di Verona</a>
-        <a class="lnk" href="https://www.arena.it/en/arena-di-verona.html" target="_blank">🌐 Web Arény</a>
-        <a class="lnk book" href="https://www.arena.it/en/tickets.html" target="_blank">🎟 Lístky Aréna</a>
-        <a class="lnk book" href="https://www.veronacitycard.com" target="_blank">🎟 Verona Card</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Arena+di+Verona" target="_blank">ð ArÃ©na di Verona</a>
+        <a class="lnk" href="https://www.arena.it/en/arena-di-verona.html" target="_blank">ð Web ArÃ©ny</a>
+        <a class="lnk book" href="https://www.arena.it/en/tickets.html" target="_blank">ð LÃ­stky ArÃ©na</a>
+        <a class="lnk book" href="https://www.veronacitycard.com" target="_blank">ð Verona Card</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot castle">🏰</div><div class="tl-content">
-      <div class="tl-time">10:30–12:30</div><div class="tl-title">Piazza delle Erbe → Casa di Giulietta → Castelvecchio</div>
+    <li class="tl-item"><div class="tl-dot castle">ð°</div><div class="tl-content">
+      <div class="tl-time">10:30â12:30</div><div class="tl-title">Piazza delle Erbe â Casa di Giulietta â Castelvecchio</div>
       <div class="tl-desc">
-        <strong>Piazza delle Erbe</strong> – trh, kaviarne, tieň pod markízami.<br>
-        <strong>Casa di Giulietta</strong> – balkón, socha Júlie. Vstup dvor: €5, dom+balkón: €12. Deti do 5 r. zadarmo. <em>⚠️ Od 26.6.2026 zatvorené 3.–4. poschodie (horúčavy).</em><br>
-        <strong>Castelvecchio</strong> – stredoveký hrad, Scaliger Bridge, ihrisko za hradom zadarmo.
+        <strong>Piazza delle Erbe</strong> â trh, kaviarne, tieÅ pod markÃ­zami.<br>
+        <strong>Casa di Giulietta</strong> â balkÃ³n, socha JÃºlie. Vstup dvor: â¬5, dom+balkÃ³n: â¬12. Deti do 5 r. zadarmo. <em>â ï¸ Od 26.6.2026 zatvorenÃ© 3.â4. poschodie (horÃºÄavy).</em><br>
+        <strong>Castelvecchio</strong> â stredovekÃ½ hrad, Scaliger Bridge, ihrisko za hradom zadarmo.
       </div>
-      <span class="tag reserve">Casa di Giulietta – kúp online</span><span class="tag kids">ihrisko za Castelvecchio</span>
+      <span class="tag reserve">Casa di Giulietta â kÃºp online</span><span class="tag kids">ihrisko za Castelvecchio</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Piazza+delle+Erbe+Verona" target="_blank">📍 Piazza delle Erbe</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Casa+di+Giulietta+Verona" target="_blank">📍 Casa Giulietta</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Castelvecchio+Verona" target="_blank">📍 Castelvecchio</a>
-        <a class="lnk book" href="https://www.museiverona.com" target="_blank">🎟 Lístky</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Piazza+delle+Erbe+Verona" target="_blank">ð Piazza delle Erbe</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Casa+di+Giulietta+Verona" target="_blank">ð Casa Giulietta</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Castelvecchio+Verona" target="_blank">ð Castelvecchio</a>
+        <a class="lnk book" href="https://www.museiverona.com" target="_blank">ð LÃ­stky</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot sun">🍝</div><div class="tl-content">
-      <div class="tl-time">12:30</div><div class="tl-title">Obed v tieni – potom rýchly odchod</div>
-      <div class="tl-desc">Reštaurácia s klimatizáciou alebo v tieni. Odchod z Verony do 13:30 – pred vrcholom horúčavy.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Piazza+Bra+Verona" target="_blank">📍 Piazza Brà</a></div>
+    <li class="tl-item"><div class="tl-dot sun">ð</div><div class="tl-content">
+      <div class="tl-time">12:30</div><div class="tl-title">Obed v tieni â potom rÃ½chly odchod</div>
+      <div class="tl-desc">ReÅ¡taurÃ¡cia s klimatizÃ¡ciou alebo v tieni. Odchod z Verony do 13:30 â pred vrcholom horÃºÄavy.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Piazza+Bra+Verona" target="_blank">ð Piazza BrÃ </a></div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot car">🚗</div><div class="tl-content">
-      <div class="tl-time">~13:30</div><div class="tl-title">Návrat do Lazise – bazén alebo pláž</div>
-      <div class="tl-desc">Poobedňajší oddych v hoteli alebo piesočnatá pláž v Lazise.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">📍 Pláž Lazise</a></div>
+    <li class="tl-item"><div class="tl-dot car">ð</div><div class="tl-content">
+      <div class="tl-time">~13:30</div><div class="tl-title">NÃ¡vrat do Lazise â bazÃ©n alebo plÃ¡Å¾</div>
+      <div class="tl-desc">PoobedÅajÅ¡Ã­ oddych v hoteli alebo piesoÄnatÃ¡ plÃ¡Å¾ v Lazise.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">ð PlÃ¡Å¾ Lazise</a></div>
     </div></li>
   </ul></div>
 </div>
@@ -372,29 +393,29 @@
 <div class="day-card">
   <div class="day-header partly">
     <div class="day-num">7</div>
-    <div class="day-meta"><div class="day-title">Parco Natura Viva + odchod ✈️</div><div class="day-date">Sobota 4. 7.</div></div>
-    <span class="weather-pill sun">☀️ 30°C</span>
+    <div class="day-meta"><div class="day-title">Parco Natura Viva + odchod âï¸</div><div class="day-date">Sobota 4. 7.</div></div>
+    <span class="weather-pill sun">âï¸ 30Â°C</span>
   </div>
   <div class="day-body"><ul class="timeline">
-    <li class="tl-item"><div class="tl-dot park">🦁</div><div class="tl-content">
-      <div class="tl-time">09:00–13:00</div><div class="tl-title">Parco Natura Viva – Bussolengo (~15 min)</div>
-      <div class="tl-desc">Zoo + safari autom (levy, antilopy, bizóny) + dinosauria záhrada. Pre obe deti skvelé. Parkovanie €5/deň.</div>
-      <span class="tag kids">safari autom + dinosaury</span><span class="tag reserve">lístky online</span>
+    <li class="tl-item"><div class="tl-dot park">ð¦</div><div class="tl-content">
+      <div class="tl-time">09:00â13:00</div><div class="tl-title">Parco Natura Viva â Bussolengo (~15 min)</div>
+      <div class="tl-desc">Zoo + safari autom (levy, antilopy, bizÃ³ny) + dinosauria zÃ¡hrada. Pre obe deti skvelÃ©. Parkovanie â¬5/deÅ.</div>
+      <span class="tag kids">safari autom + dinosaury</span><span class="tag reserve">lÃ­stky online</span>
       <div class="links">
-        <a class="lnk maps" href="https://maps.google.com/maps?q=Parco+Natura+Viva+Bussolengo" target="_blank">📍 Parco Natura Viva</a>
-        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Parco+Natura+Viva+Bussolengo" target="_blank">📍 Parkovisko</a>
-        <a class="lnk book" href="https://www.parconaturaviva.it/en/tickets/" target="_blank">🎟 Kúp lístky</a>
-        <a class="lnk" href="https://www.parconaturaviva.it" target="_blank">🌐 parconaturaviva.it</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=Parco+Natura+Viva+Bussolengo" target="_blank">ð Parco Natura Viva</a>
+        <a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Parco+Natura+Viva+Bussolengo" target="_blank">ð Parkovisko</a>
+        <a class="lnk book" href="https://www.parconaturaviva.it/en/tickets/" target="_blank">ð KÃºp lÃ­stky</a>
+        <a class="lnk" href="https://www.parconaturaviva.it" target="_blank">ð parconaturaviva.it</a>
       </div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot green">🏨</div><div class="tl-content">
-      <div class="tl-time">13:00–15:00</div><div class="tl-title">Check-out + posledná zmrzlina v Lazise</div>
-      <div class="tl-desc">Odchod z hotela, posledná prechádzka po promenáde.</div>
+    <li class="tl-item"><div class="tl-dot green">ð¨</div><div class="tl-content">
+      <div class="tl-time">13:00â15:00</div><div class="tl-title">Check-out + poslednÃ¡ zmrzlina v Lazise</div>
+      <div class="tl-desc">Odchod z hotela, poslednÃ¡ prechÃ¡dzka po promenÃ¡de.</div>
     </div></li>
-    <li class="tl-item"><div class="tl-dot car">✈</div><div class="tl-content">
-      <div class="tl-time">~15:30 odchod na BGY</div><div class="tl-title">Let BGY → VIE o 20:20</div>
-      <div class="tl-desc">Vrátenie auta na letisku BGY. Odlet domov.</div>
-      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">📍 Letisko BGY</a></div>
+    <li class="tl-item"><div class="tl-dot car">â</div><div class="tl-content">
+      <div class="tl-time">~15:30 odchod na BGY</div><div class="tl-title">Let BGY â VIE o 20:20</div>
+      <div class="tl-desc">VrÃ¡tenie auta na letisku BGY. Odlet domov.</div>
+      <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">ð Letisko BGY</a></div>
     </div></li>
   </ul></div>
 </div>
@@ -403,213 +424,213 @@
 
 <!-- WEATHER -->
 <div id="weather" class="section">
-  <p class="section-title">Aktuálna predpoveď – Lazise</p>
+  <p class="section-title">AktuÃ¡lna predpoveÄ â Lazise</p>
 
   <!-- Live weather: loads when opened in browser with internet -->
   <div id="wx-wrap" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:14px">
-    <div id="wx-days-live" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0"><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">NE 28/6</div><div class="icon">⛅</div><div class="temp">33°C</div><div class="desc">zamračené 3%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">PO 29/6</div><div class="icon">🌤️</div><div class="temp">33°C</div><div class="desc">polojasno 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">UT 30/6</div><div class="icon">⛅</div><div class="temp">34°C</div><div class="desc">zamračené 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">ST 1/7</div><div class="icon">⛈️</div><div class="temp">29°C</div><div class="desc">búrky 55%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">ŠT 2/7</div><div class="icon">🌤️</div><div class="temp">28°C</div><div class="desc">polojasno 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">PI 3/7</div><div class="icon">☀️</div><div class="temp">29°C</div><div class="desc">slnečno 1%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">SO 4/7</div><div class="icon">☀️</div><div class="temp">30°C</div><div class="desc">slnečno 6%</div></div></div>
-    <div id="wx-status" style="font-size:11px;color:#6b7a8d;text-align:right;padding:6px 12px 8px">🟢 AccuWeather · 27.6.2026 · <a href="https://www.accuweather.com/sk/it/lazise/1768/weather-forecast/1768" target="_blank" style="color:#1a6fa8">accuweather.com</a></div>
+    <div id="wx-days-live" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0"><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">NE 28/6</div><div class="icon">â</div><div class="temp">33Â°C</div><div class="desc">zamraÄenÃ© 3%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">PO 29/6</div><div class="icon">ð¤ï¸</div><div class="temp">33Â°C</div><div class="desc">polojasno 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;background:#fff3cd;"><div class="date">UT 30/6</div><div class="icon">â</div><div class="temp">34Â°C</div><div class="desc">zamraÄenÃ© 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">ST 1/7</div><div class="icon">âï¸</div><div class="temp">29Â°C</div><div class="desc">bÃºrky 55%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">Å T 2/7</div><div class="icon">ð¤ï¸</div><div class="temp">28Â°C</div><div class="desc">polojasno 4%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">PI 3/7</div><div class="icon">âï¸</div><div class="temp">29Â°C</div><div class="desc">slneÄno 1%</div></div><div class="w-day" style="border-right:1px solid #eee;padding:10px 4px;"><div class="date">SO 4/7</div><div class="icon">âï¸</div><div class="temp">30Â°C</div><div class="desc">slneÄno 6%</div></div></div>
+    <div id="wx-status" style="font-size:11px;color:#6b7a8d;text-align:right;padding:6px 12px 8px">ð¢ AccuWeather Â· 27.6.2026 Â· <a href="https://www.accuweather.com/sk/it/lazise/1768/weather-forecast/1768" target="_blank" style="color:#1a6fa8">accuweather.com</a></div>
   </div>
   <div class="info-box blue">
-    <h4>🗓️ Logika poradia dní</h4>
+    <h4>ðï¸ Logika poradia dnÃ­</h4>
     <ul>
-      <li><strong>D1 (27°C):</strong> Príchod, pomalý štart, bazén</li>
-      <li><strong>D2 (31°C):</strong> Lanovka → vrchol = ~16°C, únik z horúčavy ✓</li>
-      <li><strong>D3 – Utorok 30/6:</strong> Ráno mestá s tieňom, poobede bazén/pláž</li>
-      <li><strong>D4 – Streda 1/7:</strong> Gardaland – miernejší deň pre park ✓</li>
-      <li><strong>D5 – Štvrtok 2/7:</strong> Dážď ráno → múzeum, chladnejší deň</li>
-      <li><strong>D6 – Piatok 3/7:</strong> Verona ráno, odchod pred 13:30 ⚠️</li>
-      <li><strong>D7 – Sobota 4/7:</strong> Safari v tieni stromov, odchod na letisko</li>
+      <li><strong>D1 (27Â°C):</strong> PrÃ­chod, pomalÃ½ Å¡tart, bazÃ©n</li>
+      <li><strong>D2 (31Â°C):</strong> Lanovka â vrchol = ~16Â°C, Ãºnik z horÃºÄavy â</li>
+      <li><strong>D3 â Utorok 30/6:</strong> RÃ¡no mestÃ¡ s tieÅom, poobede bazÃ©n/plÃ¡Å¾</li>
+      <li><strong>D4 â Streda 1/7:</strong> Gardaland â miernejÅ¡Ã­ deÅ pre park â</li>
+      <li><strong>D5 â Å tvrtok 2/7:</strong> DÃ¡Å¾Ä rÃ¡no â mÃºzeum, chladnejÅ¡Ã­ deÅ</li>
+      <li><strong>D6 â Piatok 3/7:</strong> Verona rÃ¡no, odchod pred 13:30 â ï¸</li>
+      <li><strong>D7 â Sobota 4/7:</strong> Safari v tieni stromov, odchod na letisko</li>
     </ul>
   </div>
-  <div class="info-box warn"><h4>🌡️ Na vrchole Monte Baldo (D2)</h4>Pri jazere 28°C → hore len ~13–15°C. Vezmite bundy pre celú rodinu!</div>
-  <p class="section-title">Aktuálna predpoveď</p>
+  <div class="info-box warn"><h4>ð¡ï¸ Na vrchole Monte Baldo (D2)</h4>Pri jazere 28Â°C â hore len ~13â15Â°C. Vezmite bundy pre celÃº rodinu!</div>
+  <p class="section-title">AktuÃ¡lna predpoveÄ</p>
   <div class="info-box green">
-    <h4>Skontroluj deň pred výletom:</h4>
+    <h4>Skontroluj deÅ pred vÃ½letom:</h4>
     <a href="https://www.weather-forecast.com/locations/Lazise/forecasts/latest" target="_blank">weather-forecast.com/Lazise</a><br>
-    alebo Google: „meteo Lazise domani"
+    alebo Google: âmeteo Lazise domani"
   </div>
 </div>
 
 <!-- PARKING -->
 <div id="parking" class="section">
-  <p class="section-title">🅿️ Verona</p>
-  <div class="info-box red"><h4>⛔ ZTL – DÔLEŽITÉ!</h4>Kamery pri každom vstupe. Pokuta €85–200 príde domov poštou. Parkuj VŽDY mimo historického centra!</div>
+  <p class="section-title">ð¿ï¸ Verona</p>
+  <div class="info-box red"><h4>â ZTL â DÃLEÅ½ITÃ!</h4>Kamery pri kaÅ¾dom vstupe. Pokuta â¬85â200 prÃ­de domov poÅ¡tou. Parkuj VÅ½DY mimo historickÃ©ho centra!</div>
   <div class="park-option">
-    <h4>⭐ Parcheggio Centro (Via Campo Marzo)</h4>
-    <p>Podzemný, 870 miest, 24/7, 5 min pešo od Arény.</p>
-    <div class="price">~€2–3/hod · max €16–20/deň</div>
+    <h4>â­ Parcheggio Centro (Via Campo Marzo)</h4>
+    <p>PodzemnÃ½, 870 miest, 24/7, 5 min peÅ¡o od ArÃ©ny.</p>
+    <div class="price">~â¬2â3/hod Â· max â¬16â20/deÅ</div>
     <div class="links">
-      <a class="lnk maps" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">📍 Na mape</a>
-      <a class="lnk book" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">🌐 amt3.it</a>
+      <a class="lnk maps" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">ð Na mape</a>
+      <a class="lnk book" href="https://maps.google.com/?cid=8874468041724500412" target="_blank">ð amt3.it</a>
     </div>
   </div>
   <div class="park-option">
     <h4>Parcheggio Cittadella (Piazza Cittadella)</h4>
-    <p>400 m od Arény. Alternatíva ak je Arena plná.</p>
-    <div class="price">~€2/h, max ~€14.50/deň</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Cittadella+Verona" target="_blank">📍 Na mape</a></div>
+    <p>400 m od ArÃ©ny. AlternatÃ­va ak je Arena plnÃ¡.</p>
+    <div class="price">~â¬2/h, max ~â¬14.50/deÅ</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Cittadella+Verona" target="_blank">ð Na mape</a></div>
   </div>
   <div class="park-option">
-    <h4>🆓 Piazzale Olimpia – ZADARMO</h4>
-    <p>~5000 miest. Autobus č.91 → centrum 12 min, €1.50/trip.</p>
-    <div class="price">€0 parking + €3 autobus tam-späť</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Piazzale+Olimpia+parcheggio+Verona" target="_blank">📍 Na mape</a></div>
+    <h4>ð Piazzale Olimpia â ZADARMO</h4>
+    <p>~5000 miest. Autobus Ä.91 â centrum 12 min, â¬1.50/trip.</p>
+    <div class="price">â¬0 parking + â¬3 autobus tam-spÃ¤Å¥</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Piazzale+Olimpia+parcheggio+Verona" target="_blank">ð Na mape</a></div>
   </div>
   <div class="park-option">
-    <h4>🆓 Porta Palio</h4>
-    <p>Bezplatné, 1.5 km od centra. Autobus Linea E každých 15 min.</p>
-    <div class="price">€0 parking + €1.50 autobus</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Palio+Verona" target="_blank">📍 Na mape</a></div>
+    <h4>ð Porta Palio</h4>
+    <p>BezplatnÃ©, 1.5 km od centra. Autobus Linea E kaÅ¾dÃ½ch 15 min.</p>
+    <div class="price">â¬0 parking + â¬1.50 autobus</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Palio+Verona" target="_blank">ð Na mape</a></div>
   </div>
-  <p class="section-title">🅿️ Malcesine</p>
+  <p class="section-title">ð¿ï¸ Malcesine</p>
   <div class="park-option">
-    <h4>⭐ Parcheggio Paina</h4>
-    <p>5 min pešo na lanovku aj hrad. Príď pred 9:00!</p>
-    <div class="price">~€2/h</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Paina+Malcesine" target="_blank">📍 Na mape</a></div>
+    <h4>â­ Parcheggio Paina</h4>
+    <p>5 min peÅ¡o na lanovku aj hrad. PrÃ­Ä pred 9:00!</p>
+    <div class="price">~â¬2/h</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=Parcheggio+Paina+Malcesine" target="_blank">ð Na mape</a></div>
   </div>
   <div class="park-option">
-    <h4>Podzemný parkovák lanovky (Via Navene Vecchia 12)</h4>
+    <h4>PodzemnÃ½ parkovÃ¡k lanovky (Via Navene Vecchia 12)</h4>
     <p>Priamo pri dolnej stanici lanovky, 170 miest.</p>
-    <div class="price">platené · obmedz. kapacita v lete</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+funivia+Malcesine+Via+Navene+Vecchia" target="_blank">📍 Na mape</a></div>
+    <div class="price">platenÃ© Â· obmedz. kapacita v lete</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+funivia+Malcesine+Via+Navene+Vecchia" target="_blank">ð Na mape</a></div>
   </div>
-  <p class="section-title">🅿️ Ostatné mestá</p>
+  <p class="section-title">ð¿ï¸ OstatnÃ© mestÃ¡</p>
   <div class="park-option">
-    <h4>Peschiera del Garda – Porta Brescia</h4>
-    <p>Pri vstupe do starého mesta.</p>
-    <div class="price">~€1.50–2/h</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Brescia+Peschiera+del+Garda" target="_blank">📍 Na mape</a></div>
-  </div>
-  <div class="park-option">
-    <h4>Torri del Benaco – pri prístave</h4>
-    <p>Parkovisko pri prístave a trajektovom termináli.</p>
-    <div class="price">platené · sezóna ~€2/h</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+porto+Torri+del+Benaco" target="_blank">📍 Na mape</a></div>
+    <h4>Peschiera del Garda â Porta Brescia</h4>
+    <p>Pri vstupe do starÃ©ho mesta.</p>
+    <div class="price">~â¬1.50â2/h</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Porta+Brescia+Peschiera+del+Garda" target="_blank">ð Na mape</a></div>
   </div>
   <div class="park-option">
-    <h4>Sirmione – Parcheggio Lugana</h4>
-    <p>Pred vstupom do poloostrova (centrum = pešia zóna). Plné od 10:00!</p>
-    <div class="price">~€2/h</div>
-    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Lugana+Sirmione" target="_blank">📍 Na mape</a></div>
+    <h4>Torri del Benaco â pri prÃ­stave</h4>
+    <p>Parkovisko pri prÃ­stave a trajektovom terminÃ¡li.</p>
+    <div class="price">platenÃ© Â· sezÃ³na ~â¬2/h</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+porto+Torri+del+Benaco" target="_blank">ð Na mape</a></div>
+  </div>
+  <div class="park-option">
+    <h4>Sirmione â Parcheggio Lugana</h4>
+    <p>Pred vstupom do poloostrova (centrum = peÅ¡ia zÃ³na). PlnÃ© od 10:00!</p>
+    <div class="price">~â¬2/h</div>
+    <div class="links"><a class="lnk maps" href="https://maps.google.com/maps?q=parcheggio+Lugana+Sirmione" target="_blank">ð Na mape</a></div>
   </div>
 </div>
 
 <!-- RESERVATIONS -->
 <div id="reserve" class="section">
-  <div class="info-box red"><h4>🔴 Rezervuj čo najskôr – leto = plno!</h4>Gardaland a lanovka v lete predávajú na konkrétny čas. Niektoré dni sú vypredané týždeň vopred.</div>
-  <p class="section-title">Nutné rezervovať</p>
+  <div class="info-box red"><h4>ð´ Rezervuj Äo najskÃ´r â leto = plno!</h4>Gardaland a lanovka v lete predÃ¡vajÃº na konkrÃ©tny Äas. NiektorÃ© dni sÃº vypredanÃ© tÃ½Å¾deÅ vopred.</div>
+  <p class="section-title">NutnÃ© rezervovaÅ¥</p>
   <ul class="checklist">
     <li><div class="check-icon"></div><div class="label">
-      <strong>🚗 Auto – BGY letisko</strong>
-      <span>Min. stredná trieda (VW Tiguan, Peugeot 3008). Vrátenie 5.7. pred 20:20.</span>
-      <div class="links"><a class="lnk book" href="https://www.rentalcars.com" target="_blank">🚗 Porovnaj ceny</a><a class="lnk book" href="https://www.hertz.it" target="_blank">Hertz</a></div>
+      <strong>ð Auto â BGY letisko</strong>
+      <span>Min. strednÃ¡ trieda (VW Tiguan, Peugeot 3008). VrÃ¡tenie 5.7. pred 20:20.</span>
+      <div class="links"><a class="lnk book" href="https://www.rentalcars.com" target="_blank">ð Porovnaj ceny</a><a class="lnk book" href="https://www.hertz.it" target="_blank">Hertz</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🚠 Lanovka Malcesine → Monte Baldo (29. 6.)</strong>
-      <span>€27 dospelý. Rezervuj ranný čas. Bez rez. = 40+ min front.</span>
-      <div class="links"><a class="lnk book" href="https://www.funiviedelbaldo.it/en/timetables-and-fares-malcesine-monte-baldo-cable-cars" target="_blank">🎟 funiviedelbaldo.it</a></div>
+      <strong>ð  Lanovka Malcesine â Monte Baldo (29. 6.)</strong>
+      <span>â¬27 dospelÃ½. Rezervuj rannÃ½ Äas. Bez rez. = 40+ min front.</span>
+      <div class="links"><a class="lnk book" href="https://www.funiviedelbaldo.it/en/timetables-and-fares-malcesine-monte-baldo-cable-cars" target="_blank">ð funiviedelbaldo.it</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🎠 Gardaland lístky (1. 7.)</strong>
-      <span>Výrazne lacnejšie online. Uvažuj kombináciu s Legoland Water Park.</span>
-      <div class="links"><a class="lnk book" href="https://www.gardaland.it/en/tickets/" target="_blank">🎟 gardaland.it</a></div>
+      <strong>ð  Gardaland lÃ­stky (1. 7.)</strong>
+      <span>VÃ½razne lacnejÅ¡ie online. UvaÅ¾uj kombinÃ¡ciu s Legoland Water Park.</span>
+      <div class="links"><a class="lnk book" href="https://www.gardaland.it/en/tickets/" target="_blank">ð gardaland.it</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🏰 Casa di Giulietta – Verona (3. 7.)</strong>
-      <span>€5 dvor / €12 dvor+dom. Časový slot online (obmedz. kapacita od 2026).</span>
-      <div class="links"><a class="lnk book" href="https://www.museiverona.com" target="_blank">🎟 museiverona.com</a></div>
+      <strong>ð° Casa di Giulietta â Verona (3. 7.)</strong>
+      <span>â¬5 dvor / â¬12 dvor+dom. ÄasovÃ½ slot online (obmedz. kapacita od 2026).</span>
+      <div class="links"><a class="lnk book" href="https://www.museiverona.com" target="_blank">ð museiverona.com</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🦁 Parco Natura Viva (4. 7.)</strong>
-      <span>Odporúčané online. Parkovanie €5 na mieste.</span>
-      <div class="links"><a class="lnk book" href="https://www.parconaturaviva.it/en/tickets/" target="_blank">🎟 parconaturaviva.it</a></div>
+      <strong>ð¦ Parco Natura Viva (4. 7.)</strong>
+      <span>OdporÃºÄanÃ© online. Parkovanie â¬5 na mieste.</span>
+      <div class="links"><a class="lnk book" href="https://www.parconaturaviva.it/en/tickets/" target="_blank">ð parconaturaviva.it</a></div>
     </div></li>
   </ul>
-  <p class="section-title">Zvážiť</p>
+  <p class="section-title">ZvÃ¡Å¾iÅ¥</p>
   <ul class="checklist">
     <li><div class="check-icon"></div><div class="label">
-      <strong>🏟 Verona Card</strong>
-      <span>Aréna + Casa di Giulietta + Castelvecchio → Card sa oplatí (15+ atrakcií, 24h/48h).</span>
-      <div class="links"><a class="lnk book" href="https://www.veronacitycard.com" target="_blank">🎟 veronacitycard.com</a></div>
+      <strong>ð Verona Card</strong>
+      <span>ArÃ©na + Casa di Giulietta + Castelvecchio â Card sa oplatÃ­ (15+ atrakciÃ­, 24h/48h).</span>
+      <div class="links"><a class="lnk book" href="https://www.veronacitycard.com" target="_blank">ð veronacitycard.com</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🚗 Parcheggio Centro Verona</strong>
-      <span>Malý príplatok, ale garantované miesto v lete.</span>
-      <div class="links"><a class="lnk book" href="https://www.amt3.it/parcheggio-centro-verona/" target="_blank">🌐 amt3.it</a></div>
+      <strong>ð Parcheggio Centro Verona</strong>
+      <span>MalÃ½ prÃ­platok, ale garantovanÃ© miesto v lete.</span>
+      <div class="links"><a class="lnk book" href="https://www.amt3.it/parcheggio-centro-verona/" target="_blank">ð amt3.it</a></div>
     </div></li>
     <li><div class="check-icon"></div><div class="label">
-      <strong>🏎️ Museo Nicolis (2. 7.)</strong>
-      <span>Vstup aj bez rez. Ot. 10:00–18:00, zatvorené v pondelok.</span>
-      <div class="links"><a class="lnk book" href="https://www.museonicolis.com/en/info-and-tickets/" target="_blank">🎟 museonicolis.com</a></div>
+      <strong>ðï¸ Museo Nicolis (2. 7.)</strong>
+      <span>Vstup aj bez rez. Ot. 10:00â18:00, zatvorenÃ© v pondelok.</span>
+      <div class="links"><a class="lnk book" href="https://www.museonicolis.com/en/info-and-tickets/" target="_blank">ð museonicolis.com</a></div>
     </div></li>
   </ul>
 </div>
 
 <!-- TIPS -->
 <div id="tips" class="section">
-  <p class="section-title">Praktické tipy</p>
+  <p class="section-title">PraktickÃ© tipy</p>
   <div class="info-box red">
-    <h4>🌡️ Tipy na horúčavy s deťmi</h4>
+    <h4>ð¡ï¸ Tipy na horÃºÄavy s deÅ¥mi</h4>
     <ul>
-      <li>Aktivity ráno 8:00–12:00, siesta 13:00–16:00 (bazén/klimatizácia)</li>
-      <li>Vždy fľaša vody pre každého – aj na lanovku</li>
-      <li>Opaľovací krém SPF50+ každé 2h, aj pri oblačnosti</li>
-      <li>Klobúky a slnečné okuliare pre obe deti</li>
-      <li>UV index 8–10 = VEĽMI VYSOKÝ – neklamať sa!</li>
+      <li>Aktivity rÃ¡no 8:00â12:00, siesta 13:00â16:00 (bazÃ©n/klimatizÃ¡cia)</li>
+      <li>VÅ¾dy fÄ¾aÅ¡a vody pre kaÅ¾dÃ©ho â aj na lanovku</li>
+      <li>OpaÄ¾ovacÃ­ krÃ©m SPF50+ kaÅ¾dÃ© 2h, aj pri oblaÄnosti</li>
+      <li>KlobÃºky a slneÄnÃ© okuliare pre obe deti</li>
+      <li>UV index 8â10 = VEÄ½MI VYSOKÃ â neklamaÅ¥ sa!</li>
     </ul>
   </div>
   <div class="info-box green">
-    <h4>🏖️ Pláže pre deti</h4>
+    <h4>ðï¸ PlÃ¡Å¾e pre deti</h4>
     <ul>
-      <li><strong>Lazise</strong> – piesočnatá pláž, plytká voda – <a href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">mapa</a></li>
-      <li><strong>Sirmione – Lido delle Bionde</strong> – plytká, bezpečná – <a href="https://maps.google.com/maps?q=Lido+delle+Bionde+Sirmione" target="_blank">mapa</a></li>
-      <li><strong>Malcesine – Paina Beach</strong> – obliačiková, pre staršie deti – <a href="https://maps.google.com/maps?q=spiaggia+Paina+Malcesine" target="_blank">mapa</a></li>
-      <li>Vezmi obuv do vody (water shoes) – väčšina pláží je obliačiková</li>
+      <li><strong>Lazise</strong> â piesoÄnatÃ¡ plÃ¡Å¾, plytkÃ¡ voda â <a href="https://maps.google.com/maps?q=spiaggia+Lazise+lago+di+Garda" target="_blank">mapa</a></li>
+      <li><strong>Sirmione â Lido delle Bionde</strong> â plytkÃ¡, bezpeÄnÃ¡ â <a href="https://maps.google.com/maps?q=Lido+delle+Bionde+Sirmione" target="_blank">mapa</a></li>
+      <li><strong>Malcesine â Paina Beach</strong> â obliaÄikovÃ¡, pre starÅ¡ie deti â <a href="https://maps.google.com/maps?q=spiaggia+Paina+Malcesine" target="_blank">mapa</a></li>
+      <li>Vezmi obuv do vody (water shoes) â vÃ¤ÄÅ¡ina plÃ¡Å¾Ã­ je obliaÄikovÃ¡</li>
     </ul>
   </div>
   <div class="info-box blue">
-    <h4>🚤 Trajekty po jazere</h4>
+    <h4>ð¤ Trajekty po jazere</h4>
     <ul>
-      <li>Linka Lazise–Sirmione–Riva – pre deti skvelý zážitok, ušetríš parkovanie</li>
+      <li>Linka LaziseâSirmioneâRiva â pre deti skvelÃ½ zÃ¡Å¾itok, uÅ¡etrÃ­Å¡ parkovanie</li>
       <li>Deti do 4 rokov zadarmo</li>
     </ul>
-    <div class="links" style="margin-top:8px"><a class="lnk book" href="https://www.navigazionelaghi.it/en/lake-garda.aspx" target="_blank">🚢 Lístky + časy</a></div>
+    <div class="links" style="margin-top:8px"><a class="lnk book" href="https://www.navigazionelaghi.it/en/lake-garda.aspx" target="_blank">ð¢ LÃ­stky + Äasy</a></div>
   </div>
   <div class="info-box blue">
-    <h4>🛒 Trhy (streda = Lazise!)</h4>
+    <h4>ð Trhy (streda = Lazise!)</h4>
     <ul>
       <li>Pondelok: Peschiera del Garda</li><li>Utorok: Cisano</li>
-      <li><strong>Streda: Lazise</strong> ← tvoj hotel!</li>
-      <li>Štvrtok: Bardolino</li><li>Piatok: Garda</li>
+      <li><strong>Streda: Lazise</strong> â tvoj hotel!</li>
+      <li>Å tvrtok: Bardolino</li><li>Piatok: Garda</li>
     </ul>
   </div>
   <div class="info-box warn">
-    <h4>📱 Užitočné aplikácie</h4>
+    <h4>ð± UÅ¾itoÄnÃ© aplikÃ¡cie</h4>
     <ul>
-      <li><strong>Google Maps</strong> – stiahni offline mapu oblasti pred cestou</li>
-      <li><strong>EasyPark</strong> – platenie parkovného bez mincí</li>
-      <li><strong>Meteo.it</strong> – talianska predpoveď počasia</li>
+      <li><strong>Google Maps</strong> â stiahni offline mapu oblasti pred cestou</li>
+      <li><strong>EasyPark</strong> â platenie parkovnÃ©ho bez mincÃ­</li>
+      <li><strong>Meteo.it</strong> â talianska predpoveÄ poÄasia</li>
     </ul>
   </div>
   <p class="section-title">Vzdialenosti z Lazise</p>
   <div class="info-box blue"><ul>
-    <li>🎠 <a href="https://maps.google.com/maps?q=Gardaland+Castelnuovo+del+Garda" target="_blank">Gardaland</a>: <strong>5 min</strong></li>
-    <li>🏊 <a href="https://maps.google.com/maps?q=Caneva+Acquapark+Lazise" target="_blank">Caneva Aquapark</a>: <strong>5 min</strong> · <a href="https://www.canevaworld.it/en/acquapark/" target="_blank">web</a></li>
-    <li>🏰 <a href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">Peschiera del Garda</a>: <strong>10 min</strong></li>
-    <li>🦁 <a href="https://maps.google.com/maps?q=Parco+Natura+Viva+Bussolengo" target="_blank">Parco Natura Viva</a>: <strong>15 min</strong></li>
-    <li>🏛️ <a href="https://maps.google.com/maps?q=Museo+Nicolis+Villafranca+di+Verona" target="_blank">Museo Nicolis</a>: <strong>25 min</strong></li>
-    <li>🏰 <a href="https://maps.google.com/maps?q=Rocca+Scaligera+Sirmione" target="_blank">Sirmione</a>: <strong>25 min</strong></li>
-    <li>🏛️ <a href="https://maps.google.com/maps?q=Arena+di+Verona" target="_blank">Verona – Aréna</a>: <strong>30 min</strong></li>
-    <li>🚠 <a href="https://maps.google.com/maps?q=Funivia+Malcesine+Monte+Baldo" target="_blank">Malcesine – lanovka</a>: <strong>45 min</strong></li>
-    <li>✈️ <a href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">Letisko BGY</a>: <strong>75 min</strong></li>
+    <li>ð  <a href="https://maps.google.com/maps?q=Gardaland+Castelnuovo+del+Garda" target="_blank">Gardaland</a>: <strong>5 min</strong></li>
+    <li>ð <a href="https://maps.google.com/maps?q=Caneva+Acquapark+Lazise" target="_blank">Caneva Aquapark</a>: <strong>5 min</strong> Â· <a href="https://www.canevaworld.it/en/acquapark/" target="_blank">web</a></li>
+    <li>ð° <a href="https://maps.google.com/maps?q=centro+storico+Peschiera+del+Garda" target="_blank">Peschiera del Garda</a>: <strong>10 min</strong></li>
+    <li>ð¦ <a href="https://maps.google.com/maps?q=Parco+Natura+Viva+Bussolengo" target="_blank">Parco Natura Viva</a>: <strong>15 min</strong></li>
+    <li>ðï¸ <a href="https://maps.google.com/maps?q=Museo+Nicolis+Villafranca+di+Verona" target="_blank">Museo Nicolis</a>: <strong>25 min</strong></li>
+    <li>ð° <a href="https://maps.google.com/maps?q=Rocca+Scaligera+Sirmione" target="_blank">Sirmione</a>: <strong>25 min</strong></li>
+    <li>ðï¸ <a href="https://maps.google.com/maps?q=Arena+di+Verona" target="_blank">Verona â ArÃ©na</a>: <strong>30 min</strong></li>
+    <li>ð  <a href="https://maps.google.com/maps?q=Funivia+Malcesine+Monte+Baldo" target="_blank">Malcesine â lanovka</a>: <strong>45 min</strong></li>
+    <li>âï¸ <a href="https://maps.google.com/maps?q=Aeroporto+di+Bergamo+Orio+al+Serio" target="_blank">Letisko BGY</a>: <strong>75 min</strong></li>
   </ul></div>
 </div>
 
 <footer>
-  Itinerár zostavený pre rodinu 2+2 · Lazise, Lago di Garda · 28.6.–5.7.2026<br>
-  Ceny a časy overte pred cestou na stránkach prevádzkovateľov.
+  ItinerÃ¡r zostavenÃ½ pre rodinu 2+2 Â· Lazise, Lago di Garda Â· 28.6.â5.7.2026<br>
+  Ceny a Äasy overte pred cestou na strÃ¡nkach prevÃ¡dzkovateÄ¾ov.
 </footer>
 <script>
 function showTab(id,el){
